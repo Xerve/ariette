@@ -1,0 +1,16 @@
+# Composer
+vendor/
+composer.lock
+
+# Zed
+.zedstate
+
+# IDEA
+.idea/
+
+# SQL
+*.db
+*.sql
+
+# Any root PHP files
+*.php
