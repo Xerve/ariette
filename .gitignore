@@ -11,6 +11,3 @@ composer.lock
 # SQL
 *.db
 *.sql
-
-# Any root PHP files
-*.php
