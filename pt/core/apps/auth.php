@@ -46,7 +46,7 @@ class Auth extends \Pt\PtApp {
             },
             "password" => function($password) {
                 if (!is_string($password)) { 
-                    throw new Expetion("Password is not a string!");   
+                    throw new Expcetion("Password is not a string!");   
                 } else if (strlen($password) < 8) {
                     throw new Excpetion("Password is too short!");
                 } else if (strlen($password) > 20) {
