@@ -29,7 +29,7 @@ class Pt {
         $this->apps[$route] = $func;
     }
     
-    public function ware($name, $func) {
+    public function apply($name, $func) {
         $this->wares[$name] = $func;
     }
     
@@ -67,15 +67,15 @@ class Pt {
         header("content-type: application/json");
         $input = json_decode(file_get_contents("php://input"), true);
         
-        return $this->run($input);
+        return json_encode($this->run($input));
     }
     
-    public function run($input) {
-        if (!array_key_exists("path", $input)) {
-            return json_encode([
+    public function run($input=[]) {
+        if (!$input || !array_key_exists("path", $input)) {
+            return [
                 "error" => 404,
                 "message" => "Path not specified!" 
-            ]);
+            ];
         }
         
         foreach($this->wares as $n => $w) {
@@ -86,10 +86,10 @@ class Pt {
                     $input = $w->handler($input);
                 }
             } catch (Exception $e) {
-                return json_encode([
+                return [
                    "error" => 500,
                    "log" => $e->getMessage()
-                ]);
+                ];
             }
         }
         
@@ -119,6 +119,6 @@ class Pt {
             $res = ["error" => 404];
         }   
         
-        return json_encode($res);
+        return $res;
     }
 }

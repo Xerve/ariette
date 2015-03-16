@@ -24,9 +24,7 @@ class Validator extends \Pt\PtWare {
             }
             
             if (is_callable($val)) {
-                if (!$val($input[$required])) {
-                    throw new Exception("Schema value $required did not meet spec!");
-                }
+                $val($input[$required]);
             }
         }
         

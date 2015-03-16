@@ -9,10 +9,9 @@ class DB extends \Pt\PtApp {
     public static $NAME = "Pt::DB";
     
     private $schemas = [];
+    private $pks = [];
     
     public function __construct($options=false) {
-        ORM::configure("sqlite:./ptdb.db", null, "pt");
-        
         if ($options) {
             if (!array_key_exists("connection_string", $options)) {
                 throw new Exception("No connection_string provided for Pt::DB");
@@ -20,7 +19,7 @@ class DB extends \Pt\PtApp {
     
             ORM::configure($options);            
         } else {
-            ORM::configure("sqlite:./ptdb.db");
+            ORM::configure("sqlite:./pt.db");
         }
     }
     
@@ -28,22 +27,17 @@ class DB extends \Pt\PtApp {
         return [];
     }
     
-    public function schema($name, $schema) {
-        $arr = explode("::", $name);
-        $db = $arr[0];
-        $table = $arr[1];
+    public function schema($table, $pk, $schema) {
+        $this->pks[$table] = $pk;
+        ORM::configure("id_column_overrides", $this->pks);
         
-        if (!array_key_exists($db, $this->schemas)) {
-            $this->schemas[$db] = [];
-        }
-        
-        $this->schemas[$db][$table] = $schema;
+        $this->schemas[$table] = $schema;
     }
     
-    public function getSchema($db) {
+    public function getSchema() {
         $ret = "";
         
-        foreach($this->schemas[$db] as $name => $schema) {
+        foreach($this->schemas as $name => $schema) {
             $ret = $ret . "CREATE TABLE " . $name . "(";
             foreach($schema as $line) {
                 $ret = $ret . $line . ",";
@@ -52,6 +46,6 @@ class DB extends \Pt\PtApp {
             $ret = rtrim($ret, ",") . ");";
         }
         
-        echo $ret;
+        return $ret;
     }
 }

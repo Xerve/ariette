@@ -11,3 +11,6 @@ composer.lock
 # SQL
 *.db
 *.sql
+
+# FlatDB
+flatdb/
