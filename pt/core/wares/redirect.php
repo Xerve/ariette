@@ -21,5 +21,6 @@ class Redirect extends \Pt\PtWare {
     
     public function addRule($source, $destination) {
         $this->routes[$source] = $destination;   
+        return $this;
     }
 }

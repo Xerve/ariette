@@ -17,5 +17,6 @@ class Injector extends \Pt\PtWare {
     
     public function addRule($key, $value) {
         $this->vars[$key] = $value;
+        return $this;
     }
 }

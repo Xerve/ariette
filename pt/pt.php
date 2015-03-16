@@ -53,7 +53,7 @@ class Pt {
             throw new Exception("Illegal name for middleware: ".$ware::$NAME);    
         }
         
-        foreach($ware::$DEPENDENCIES as $dep) {
+        foreach ($ware::$DEPENDENCIES as $dep) {
             if (!array_key_exists($dep, $this->apps) && !array_key_exists($dep, $this->wares)) {
                 throw new Exception("Dependency $dep not met for ".$ware::$NAME);
             }
@@ -78,7 +78,7 @@ class Pt {
             ];
         }
         
-        foreach($this->wares as $n => $w) {
+        foreach ($this->wares as $n => $w) {
             try {
                 if (is_callable($w)) {
                     $input = $w($input);

@@ -33,5 +33,6 @@ class Validator extends \Pt\PtWare {
     
     public function addRule($route, $schema) {
         $this->rules[$route] = $schema;
+        return $this;
     }
 }
