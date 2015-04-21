@@ -4,31 +4,21 @@ require_once "vendor/autoload.php";
 
 use Pt\Pt;
 
-Pt::module("Middleware", [])
-->component("something", function($input) {
-    $input["lol"] = 8;
-    return $input;
-})
-
-->component("else", function() {
-    echo "hey\n";
-});
-
-
-Pt::module("Test", ['config'], function($config) {
-    $config->config('Test::test', [
+Pt::module("Test", ['Pt::config',
+                    'Pt::redirect'], function($config, $redirect) {
+    $config('Test::test', [
         "hole" => 10
     ]);
+
+    $redirect('Test::me', 'Test::test');
 })
 
 ->component("test",
             ['*Middleware::something',
-             '*config::config'],
+             '*Pt::config'],
              function($input) {
     return $input;
 });
-
-Pt::module('config', []);
 
 echo Pt::run([
     '$path' => "Test::test",

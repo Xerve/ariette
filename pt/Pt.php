@@ -7,14 +7,22 @@ class Pt {
     private static $modules = [];
 
     public static function module($name, $deps=null, $callback=null) {
+        // Creating a new module
         if (!array_key_exists($name, self::$modules) && $deps !== null) {
+            $middleware = [];
+            $endware = [];
+
             foreach ($deps as $dep) {
-                if (!array_key_exists($dep, self::$modules)) {
+                if (substr($dep, 0, 1) === '*') {
+                    $middleware[] = $dep;
+                } else if (substr($dep, -1, 1) === '*') {
+                    $endware[] = $dep;
+                } else if (!array_key_exists($dep, self::$modules)) {
                     throw new Exception("Module $dep required by $name is not loaded!");
                 }
             }
 
-            $m = new Module($name);
+            $m = new Module($name, $middleware, $endware);
             self::$modules[$name] = $m;
 
             if ($callback !== null) {
@@ -25,13 +33,19 @@ class Pt {
             }
 
             return $m;
-        } else if (array_key_exists($name, self::$modules)) {
+        }
+
+        // Retrieving an existing module
+        else if (array_key_exists($name, self::$modules)) {
             if ($deps === null) {
                 return self::$modules[$name];
             } else {
                 throw new Exception("Cannot redeclare Module $name!");
             }
-        } else {
+        }
+
+        // Default
+        else {
             throw new Exception("Module $name is not loaded!");
         }
     }
@@ -76,7 +90,13 @@ class Pt {
             throw new Exception("Invalid path string $path!");
         }
 
-        $component = self::getComponent($i[0], $i[1]);
+        try {
+            $component = self::getComponent($i[0], $i[1]);
+        } catch (Exception $e) {
+            return json_encode([
+                '$status' => 404
+            ]);
+        }
 
         return json_encode(self::handle($component, $input));
     }
@@ -111,6 +131,12 @@ class Pt {
             $output = self::handle($ware, $output);
         }
 
+        if (!array_key_exists('$status', $output)) {
+            $output['$status'] = 200;
+        }
+
         return $output;
     }
 }
+
+Pt::module('Pt', []);

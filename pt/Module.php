@@ -6,10 +6,14 @@ use \Exception;
 class Module {
     private $name;
     private $components;
+    private $middleware;
+    private $endware;
 
-    public function __construct($name) {
+    public function __construct($name, $middleware, $endware) {
         $this->name = $name;
         $this->components = [];
+        $this->middleware = $middleware;
+        $this->endware = $endware;
     }
 
     public function __toString() {
@@ -37,10 +41,16 @@ class Module {
             return $this->components[$name];
         }
 
+        if ($deps === null) {
+            throw new Exception("Illegal declaration of Component!");
+        }
+
         if ($func === null) {
             $func = $deps;
             $deps = [];
         }
+
+        $deps = array_merge($this->middleware, $deps, $this->endware);
 
         $c = new Component($this->name, $name, $deps, $func);
         $this->components[$name] = $c;
