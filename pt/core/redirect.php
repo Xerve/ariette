@@ -16,8 +16,12 @@ Pt::module('Pt')
     else {
         if (array_key_exists($component['$path'], $rules)) {
             $component['$path'] = $rules[$component['$path']];
-        }
+            $c = Pt::run($component);
+            $c['$short'] = true;
 
-        return $component;
+            return $c;
+        } else {
+            return $component;
+        }
     }
 });

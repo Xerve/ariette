@@ -50,11 +50,20 @@ class Module {
             $deps = [];
         }
 
-        $deps = array_merge($this->middleware, $deps, $this->endware);
+        if ($name !== '__init__') {
+            $deps = array_merge($this->middleware, $deps, $this->endware);
+        }
 
         $c = new Component($this->name, $name, $deps, $func);
         $this->components[$name] = $c;
 
         return $this;
+    }
+
+    public function printComponents() {
+        echo '| ', $this, PHP_EOL;
+        foreach ($this->components as $c) {
+            echo '|---> ', $c, PHP_EOL;
+        }
     }
 }

@@ -17,8 +17,12 @@ class Pt {
                     $middleware[] = $dep;
                 } else if (substr($dep, -1, 1) === '*') {
                     $endware[] = $dep;
-                } else if (!array_key_exists($dep, self::$modules)) {
-                    throw new Exception("Module $dep required by $name is not loaded!");
+                } else {
+                    try {
+                        $c = self::getComponent($dep);
+                    } catch (Exception $e) {
+                        throw new Exception("Module $dep required by $name is not loaded!");
+                    }
                 }
             }
 
@@ -29,7 +33,7 @@ class Pt {
                 $m->component('__init__', $deps, $callback);
                 self::handle($m->__init__, [
                     '$path' => "$name::__init__"
-                ]);
+                ], 'NOOP');
             }
 
             return $m;
@@ -75,7 +79,11 @@ class Pt {
         }
     }
 
-    public static function run($input=null) {
+    public static function Pt($input=null, $silent=null) {
+        return json_encode(self::run($input, $silent));
+    }
+
+    public static function run($input=null, $silent=null) {
         if ($input === null) {
             header("content-type: application/json");
             $input = json_decode(file_get_contents("php://input"), true);
@@ -93,15 +101,15 @@ class Pt {
         try {
             $component = self::getComponent($i[0], $i[1]);
         } catch (Exception $e) {
-            return json_encode([
+            return [
                 '$status' => 404
-            ]);
+            ];
         }
 
-        return json_encode(self::handle($component, $input));
+        return self::handle($component, $input, $silent);
     }
 
-    public static function handle(Component $component, $input) {
+    public static function handle(Component $component, $input, $silent=false) {
         $component_deps = [];
         $middleware = [];
         $endware = [];
@@ -123,12 +131,41 @@ class Pt {
 
         foreach ($middleware as $ware) {
             $input = self::handle($ware, $input);
+
+            if ($silent === 'EXPLICIT') {
+                echo $ware, "\n============\n", json_encode($input), PHP_EOL, PHP_EOL;
+            }
+
+            if (array_key_exists('$short', $input)) {
+                if ($input['$short']) {
+                    return $input;
+                }
+            }
         }
 
-        $output = $component($input, $component_deps);
+        if ($silent === 'NOOP') {
+            $component($input, $component_deps);
+            $output = $input;
+        } else {
+            $output = $component($input, $component_deps);
+        }
+
+        if ($silent === 'EXPLICIT') {
+            echo $component, "\n============\n", json_encode($output), PHP_EOL, PHP_EOL;
+        }
 
         foreach ($endware as $ware) {
             $output = self::handle($ware, $output);
+
+            if ($silent === 'EXPLICIT') {
+                echo $ware, "\n============\n", json_encode($output), PHP_EOL, PHP_EOL;
+            }
+
+            if (array_key_exists('$short', $output)) {
+                if ($output['$short']) {
+                    return $output;
+                }
+            }
         }
 
         if (!array_key_exists('$status', $output)) {
@@ -136,6 +173,12 @@ class Pt {
         }
 
         return $output;
+    }
+
+    public static function printNS() {
+        foreach (self::$modules as $m) {
+            $m->printComponents();
+        }
     }
 }
 

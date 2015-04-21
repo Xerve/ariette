@@ -13,7 +13,13 @@ class Component {
     }
 
     public function __toString() {
-        return "Component $this->name";
+        $buf = "Component $this->name [";
+        foreach ($this->deps as $dep) {
+            $buf = $buf . "$dep ";
+        }
+        $buf = trim($buf, ' ') . ']';
+
+        return $buf;
     }
 
     public function __invoke($input, $deps=null) {
