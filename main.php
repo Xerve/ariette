@@ -1,22 +1,36 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once "vendor/autoload.php";
 
-$pt = new Pt\Pt();
+use Pt\Pt;
 
-$pt->middleware(new Pt\Core\Wares\Validator());
+Pt::module("Middleware", [])
+->component("something", function($input) {
+    $input["lol"] = 8;
+    return $input;
+})
 
-$pt->register(new Pt\Core\Apps\DB());
+->component("else", function() {
+    echo "hey\n";
+});
 
-$pt->register(new Pt\Core\Apps\FlatDB([
-    "path" => __DIR__."/flatdb"
-]));
 
-$pt->register(new Pt\Core\Apps\Test());
+Pt::module("Test", ['config'], function($config) {
+    $config->config('Test::test', [
+        "hole" => 10
+    ]);
+})
 
-$pt->register(new Pt\Core\Apps\Auth([
-    "secret_token" => "THIS_IS_A_SECRET"    
-]));
+->component("test",
+            ['*Middleware::something',
+             '*config::config'],
+             function($input) {
+    return $input;
+});
 
-echo $pt->handler();
-//echo $pt->apps["Pt::DB"]->getSchema();
+Pt::module('config', []);
+
+echo Pt::run([
+    '$path' => "Test::test",
+    "lol" => 5
+]), PHP_EOL;

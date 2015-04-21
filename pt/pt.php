@@ -1,124 +1,116 @@
 <?php
-
 namespace Pt;
 
 use \Exception;
 
-abstract class PtWare {
-    public static $NAME;
-    public static $DEPENDENCIES = [];
-    
-    abstract public function handler($input);
-    public function init($apps, $wares) {}
-}
-
-abstract class PtApp {
-    public static $NAME;
-    public static $DEPENDENCIES = [];
-    public static $METHODS = [];
-    
-    abstract public function handler($input);
-    public function init($apps, $wares) {}
-}
-
 class Pt {
-    public $apps = [];
-    public $wares = [];
-    
-    public function route($route, $func) {
-        $this->apps[$route] = $func;
-    }
-    
-    public function apply($name, $func) {
-        $this->wares[$name] = $func;
-    }
-    
-    public function register(PtApp $app) {
-        if (!strpos($app::$NAME, "::")) {
-            throw new Exception("Illegal name for app: ".$app::$NAME);    
-        }
-        
-        foreach($app::$DEPENDENCIES as $dep) {
-            if (!array_key_exists($dep, $this->apps) && !array_key_exists($dep, $this->wares)) {
-                throw new Exception("Dependency $dep not met for ".$app::$NAME);
-            }
-        }
+    private static $modules = [];
 
-        $app->init($this->apps, $this->wares);        
-        $this->apps[$app::$NAME] = $app;
-    }
-    
-    public function middleware(PtWare $ware) {
-        if (!strpos($ware::$NAME, "::")) {
-            throw new Exception("Illegal name for middleware: ".$ware::$NAME);    
-        }
-        
-        foreach ($ware::$DEPENDENCIES as $dep) {
-            if (!array_key_exists($dep, $this->apps) && !array_key_exists($dep, $this->wares)) {
-                throw new Exception("Dependency $dep not met for ".$ware::$NAME);
-            }
-        }
-        
-        $ware->init($this->apps, $this->wares);
-        $this->wares[$ware::$NAME] = $ware;
-    }
-    
-    public function handler($options=[]) {
-        header("content-type: application/json");
-        $input = json_decode(file_get_contents("php://input"), true);
-        
-        return json_encode($this->run($input));
-    }
-    
-    public function run($input=[]) {
-        if (!$input || !array_key_exists("path", $input)) {
-            return [
-                "error" => 404,
-                "message" => "Path not specified!" 
-            ];
-        }
-        
-        foreach ($this->wares as $n => $w) {
-            try {
-                if (is_callable($w)) {
-                    $input = $w($input);
-                } else {
-                    $input = $w->handler($input);
+    public static function module($name, $deps=null, $callback=null) {
+        if (!array_key_exists($name, self::$modules) && $deps !== null) {
+            foreach ($deps as $dep) {
+                if (!array_key_exists($dep, self::$modules)) {
+                    throw new Exception("Module $dep required by $name is not loaded!");
                 }
-            } catch (Exception $e) {
-                return [
-                   "error" => 500,
-                   "log" => $e->getMessage()
-                ];
             }
-        }
-        
-        $arr = explode(".", $input["path"]);
-        $path = $arr[0];
-        $sub = (count($arr) > 1) ? $arr[1] : 'handler';
-        
-        if (array_key_exists($path, $this->apps)) {
-            $app = $this->apps[$path];
-            if (is_callable($app)) {
-                $res = $app($input);
+
+            $m = new Module($name);
+            self::$modules[$name] = $m;
+
+            if ($callback !== null) {
+                $m->component('__init__', $deps, $callback);
+                self::handle($m->__init__, [
+                    '$path' => "$name::__init__"
+                ]);
+            }
+
+            return $m;
+        } else if (array_key_exists($name, self::$modules)) {
+            if ($deps === null) {
+                return self::$modules[$name];
             } else {
-                if (!in_array($sub, $app::$METHODS) && $sub !== 'handler') {  
-                    $res = ["error" => 404];
-                } else {
-                    try {
-                        $res = $app->$sub($input);
-                    } catch (Exception $e) {
-                        $res = [
-                           "error" => 500,
-                           "log" => $e->getMessage()
-                        ];
-                    }                
-                }    
+                throw new Exception("Cannot redeclare Module $name!");
             }
         } else {
-            $res = ["error" => 404];
-        }   
-        
-        return $res;
+            throw new Exception("Module $name is not loaded!");
+        }
+    }
+
+    public function getComponent($mod, $com=null) {
+        if ($com === null) {
+            $i = explode('::', $mod);
+            if (count($i) > 2) {
+                throw new Exception("Invalid component string $mod!");
+            }
+
+            $mod = $i[0];
+
+            if (count($i) > 1) {
+                $com = $i[1];
+            }
+        }
+
+        if (!array_key_exists($mod, self::$modules)) {
+            throw new Exception("No module $mod has been loaded!");
+        }
+
+        if ($com === null) {
+            return self::$modules[$mod];
+        } else {
+            return self::$modules[$mod]->component($com);
+        }
+    }
+
+    public static function run($input=null) {
+        if ($input === null) {
+            header("content-type: application/json");
+            $input = json_decode(file_get_contents("php://input"), true);
+        }
+
+        if (!array_key_exists('$path', $input)) {
+            throw new Exception('No $path provided!');
+        }
+
+        $i = explode('::', $input['$path']);
+        if (count($i) != 2) {
+            throw new Exception("Invalid path string $path!");
+        }
+
+        $component = self::getComponent($i[0], $i[1]);
+
+        return json_encode(self::handle($component, $input));
+    }
+
+    public static function handle(Component $component, $input) {
+        $component_deps = [];
+        $middleware = [];
+        $endware = [];
+
+        foreach ($component->deps as $dep) {
+            if (substr($dep, 0, 1) === '*') {
+                $middleware[] = self::getComponent(trim($dep, '*'));
+            } else if (substr($dep, -1, 1) === '*') {
+                $endware[] = self::getComponent(trim($dep, '*'));
+            } else {
+                $c = self::getComponent($dep);
+                if (get_class($c) === "Pt\Module") {
+                    $component_deps[] = $c;
+                } else {
+                    $component_deps[] = $c->func;
+                }
+            }
+        }
+
+        foreach ($middleware as $ware) {
+            $input = self::handle($ware, $input);
+        }
+
+        $output = $component($input, $component_deps);
+
+        foreach ($endware as $ware) {
+            $output = self::handle($ware, $output);
+        }
+
+        return $output;
     }
 }

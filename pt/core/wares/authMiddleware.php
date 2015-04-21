@@ -20,6 +20,16 @@ class AuthMiddleware extends \Pt\PtWare {
     }
     
     public function handler($input) {
+        if (array_key_exists("s_token", $input)) {
+            $input["user"] = ORM::for_table('auth_users')
+                ->where('s_token', $input["s_token"])
+                ->find_one();
+                
+            if ($input["user"]) {
+                $input["user_permissions"] = explode("|", $input["user"]->permissions);
+            }
+        }        
+        
         if (!array_key_exists($input["path"], $this->rules)) {
             return $input;
         }
