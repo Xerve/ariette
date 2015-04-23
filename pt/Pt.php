@@ -6,9 +6,19 @@ use \Exception;
 class Pt {
     private static $modules = [];
 
+    public static function __callStatic($name, $arguments) {
+        if (is_array($arguments)) {
+            if (count($arguments === 1)) {
+                return self::getComponent($name, $arguments[0]);
+            }
+        }
+
+        throw new Exception("Improper use of static on Pt!");
+    }
+
     public static function module($name, $deps=null, $callback=null) {
         // Creating a new module
-        if (!array_key_exists($name, self::$modules) && $deps !== null) {
+        if (!array_key_exists($name, self::$modules) && $deps !== null && !is_string($deps)) {
             $middleware = [];
             $endware = [];
 
@@ -18,11 +28,7 @@ class Pt {
                 } else if (substr($dep, -1, 1) === '*') {
                     $endware[] = $dep;
                 } else {
-                    try {
-                        $c = self::getComponent($dep);
-                    } catch (Exception $e) {
-                        throw new Exception("Module $dep required by $name is not loaded!");
-                    }
+                    self::getComponent($dep);
                 }
             }
 
@@ -31,13 +37,12 @@ class Pt {
 
             if ($callback !== null) {
                 $m->component('__init__', $deps, $callback);
-                self::handle($m->__init__, [
-                    '$path' => "$name::__init__"
-                ], 'NOOP');
             }
 
             return $m;
         }
+
+        // Creating a lazily loaded module
 
         // Retrieving an existing module
         else if (array_key_exists($name, self::$modules)) {
@@ -72,15 +77,15 @@ class Pt {
             throw new Exception("No module $mod has been loaded!");
         }
 
+        if (self::$modules[$mod]->init === false) {
+            self::$modules[$mod]->__init__();
+        }
+
         if ($com === null) {
             return self::$modules[$mod];
         } else {
             return self::$modules[$mod]->component($com);
         }
-    }
-
-    public static function Pt($input=null, $silent=null) {
-        return json_encode(self::run($input, $silent));
     }
 
     public static function run($input=null, $silent=null) {
@@ -101,18 +106,35 @@ class Pt {
         try {
             $component = self::getComponent($i[0], $i[1]);
         } catch (Exception $e) {
-            return [
-                '$status' => 404
-            ];
+            return json_encode([
+                '@status' => 404,
+                '@log' => $e->getMessage()
+            ]);
         }
 
-        return self::handle($component, $input, $silent);
+        $output = self::handle($component, $input, $silent);
+
+        foreach ($output as $key => $attr) {
+            if (substr($key, 0, 1) === '$') {
+                unset($output[$key]);
+            }
+        }
+
+        return json_encode($output);
     }
 
-    public static function handle(Component $component, $input, $silent=false) {
+    public static function handle(Component $component, $input=null, $silent=false) {
         $component_deps = [];
         $middleware = [];
         $endware = [];
+
+        if ($input === null) {
+            $input = [];
+        }
+
+        if (!array_key_exists('$path', $input)) {
+            $input['$path'] = $component->name;
+        }
 
         foreach ($component->deps as $dep) {
             if (substr($dep, 0, 1) === '*') {
@@ -168,8 +190,8 @@ class Pt {
             }
         }
 
-        if (!array_key_exists('$status', $output)) {
-            $output['$status'] = 200;
+        if (!array_key_exists('@status', $output)) {
+            $output['@status'] = 200;
         }
 
         return $output;

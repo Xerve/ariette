@@ -10,12 +10,10 @@ Pt::module("Test", ['Pt::config',
     $config('Test::me', [
         "hole" => 10
     ]);
-
-    $redirect('Test::me', 'Test::test');
 })
 
 ->component('me', ['*Pt::config'], function($input) {
-    $input['lol'] = 9;
+    $input['lol'] = $input['$config'];
     return $input;
 })
 
@@ -25,7 +23,7 @@ Pt::module("Test", ['Pt::config',
 
 Pt::printNS();
 
-echo Pt::Pt([
+echo Pt::run([
     '$path' => "Test::me",
     "lol" => 5
 ]), PHP_EOL;
