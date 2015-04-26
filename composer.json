@@ -5,10 +5,6 @@
         "j4mie/idiorm": "1.5.1"
     },
     "autoload": {
-        "psr-4": {"Pt\\": "pt/"},
-        "files": [
-            "pt/core/config.php",
-            "pt/core/redirect.php"
-        ]
+        "psr-4": {"Pt\\": "pt/"}
     }
 }

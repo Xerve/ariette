@@ -75,7 +75,7 @@ class Module {
         }
 
         if ($deps === null) {
-            throw new Exception("Illegal declaration of Component!");
+            throw new Exception("Component $this->name::$name is not loaded!");
         }
 
         if ($func === null) {

@@ -21,8 +21,6 @@ Pt::module("Test", ['Pt::config',
     return $input;
 });
 
-Pt::printNS();
-
 echo Pt::run([
     '$path' => "Test::me",
     "lol" => 5

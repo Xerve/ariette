@@ -43,13 +43,36 @@ class Pt {
         }
 
         // Creating a lazily loaded module
+        else if (!array_key_exists($name, self::$modules) && is_string($deps) && $callback === null) {
+            self::$modules[$name] = $deps;
+        }
 
         // Retrieving an existing module
         else if (array_key_exists($name, self::$modules)) {
             if ($deps === null) {
-                return self::$modules[$name];
+                $m = self::$modules[$name];
+
+                if (is_string($m)) {
+                    unset(self::$modules[$name]);
+                    $__require = function() use ($m) {
+                        require_once $m;
+                    };
+
+                    $__require();
+
+                    return self::$modules[$name];
+                } else {
+                    return $m;
+                }
             } else {
-                throw new Exception("Cannot redeclare Module $name!");
+                $m = self::$modules[$name];
+
+                // Module is already loaded
+                if (!is_string($m)) {
+                    throw new Exception("Cannot redeclare Module $name!");
+                } else {
+                    throw new Exception("Cannot declare Module $mod as file!");
+                }
             }
         }
 
@@ -77,14 +100,14 @@ class Pt {
             throw new Exception("No module $mod has been loaded!");
         }
 
-        if (self::$modules[$mod]->init === false) {
+        if (!is_string(self::$modules[$mod]) && self::$modules[$mod]->init === false) {
             self::$modules[$mod]->__init__();
         }
 
         if ($com === null) {
-            return self::$modules[$mod];
+            return self::module($mod);
         } else {
-            return self::$modules[$mod]->component($com);
+            return self::module($mod)->component($com);
         }
     }
 
@@ -204,4 +227,4 @@ class Pt {
     }
 }
 
-Pt::module('Pt', []);
+Pt::module('Pt', __DIR__.'/core/__pt.php');
