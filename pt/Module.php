@@ -59,6 +59,7 @@ class Module {
     }
 
     public function component($name, $deps=null, $func=null) {
+        // Getting __init__, if it exists or not
         if ($name === '__init__' && $deps === null && $func === null) {
             if (array_key_exists('__init__', $this->components)) {
                 return $this->components['__init__'];
@@ -68,12 +69,36 @@ class Module {
             }
         }
 
+        // Component Exists
         if (array_key_exists($name, $this->components) && $deps === null) {
-            return $this->components[$name];
-        } else if (array_key_exists($name, $this->components)) {
+            $c = $this->components[$name];
+
+            if (is_string($c)) {
+                unset($this->components[$name]);
+                $__require = function() use ($c) {
+                    require_once $c;
+                };
+
+                $__require();
+
+                return $this->components[$name];
+            } else {
+                return $c;
+            }
+        }
+
+        // Trying to redefine a component
+        else if (array_key_exists($name, $this->components)) {
             throw new Exception("Cannot redefine Component $name on Module $this->name");
         }
 
+        else if (is_string($deps) && $func === null) {
+            $this->components[$name] = $deps;
+
+            return $this;
+        }
+
+        // Module isn't loaded
         if ($deps === null) {
             throw new Exception("Component $this->name::$name is not loaded!");
         }
@@ -83,9 +108,10 @@ class Module {
             $deps = [];
         }
 
-        if ($name !== '__init__') {
-            $deps = array_merge($this->middleware, $deps, $this->endware);
-        }
+        // Don't use middleware or endware for the __init__ fucntion
+        // if ($name !== '__init__') {
+        //     $deps = array_merge($this->middleware, $deps, $this->endware);
+        // }
 
         $c = new Component($this->name, $name, $deps, $func);
         $this->components[$name] = $c;
@@ -93,10 +119,18 @@ class Module {
         return $this;
     }
 
+    public function componentExists($name) {
+        return array_key_exists($name, $this->components);
+    }
+
     public function printComponents() {
         echo '| ', $this, PHP_EOL;
-        foreach ($this->components as $c) {
-            echo '|---> ', $c, PHP_EOL;
+        foreach ($this->components as $name => $c) {
+            if (is_string($c)) {
+                echo "|---> 0.Component $this->name::$name\n";
+            } else {
+                echo '|---> ', $c, PHP_EOL;
+            }
         }
     }
 }

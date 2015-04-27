@@ -4,12 +4,9 @@ require_once "vendor/autoload.php";
 
 use Pt\Pt;
 
-Pt::module("Test", ['Pt::config',
+Pt::module("Test", [
                     'Pt::redirect',
-                    '*Pt::redirect'], function($config, $redirect) {
-    $config('Test::me', [
-        "hole" => 10
-    ]);
+                    '*Pt::redirect'], function($redirect) {
 })
 
 ->component('me', ['*Pt::config'], function($input) {
@@ -21,7 +18,11 @@ Pt::module("Test", ['Pt::config',
     return $input;
 });
 
+Pt::printNS();
+
 echo Pt::run([
-    '$path' => "Test::me",
+    '$path' => "Test::test",
     "lol" => 5
-]), PHP_EOL;
+], 'NOCATCH'), PHP_EOL;
+
+Pt::printNS();

@@ -27,8 +27,6 @@ class Pt {
                     $middleware[] = $dep;
                 } else if (substr($dep, -1, 1) === '*') {
                     $endware[] = $dep;
-                } else {
-                    self::getComponent($dep);
                 }
             }
 
@@ -126,13 +124,17 @@ class Pt {
             throw new Exception("Invalid path string $path!");
         }
 
-        try {
+        if ($silent !== 'NOCATCH') {
+            try {
+                $component = self::getComponent($i[0], $i[1]);
+            } catch (Exception $e) {
+                return json_encode([
+                    '@status' => 404,
+                    '@log' => $e->getMessage()
+                ]);
+            }
+        } else {
             $component = self::getComponent($i[0], $i[1]);
-        } catch (Exception $e) {
-            return json_encode([
-                '@status' => 404,
-                '@log' => $e->getMessage()
-            ]);
         }
 
         $output = self::handle($component, $input, $silent);
@@ -177,7 +179,7 @@ class Pt {
         foreach ($middleware as $ware) {
             $input = self::handle($ware, $input);
 
-            if ($silent === 'EXPLICIT') {
+            if ($silent === 'SCREAM') {
                 echo $ware, "\n============\n", json_encode($input), PHP_EOL, PHP_EOL;
             }
 
@@ -195,14 +197,14 @@ class Pt {
             $output = $component($input, $component_deps);
         }
 
-        if ($silent === 'EXPLICIT') {
+        if ($silent === 'SCREAM') {
             echo $component, "\n============\n", json_encode($output), PHP_EOL, PHP_EOL;
         }
 
         foreach ($endware as $ware) {
             $output = self::handle($ware, $output);
 
-            if ($silent === 'EXPLICIT') {
+            if ($silent === 'SCREAM') {
                 echo $ware, "\n============\n", json_encode($output), PHP_EOL, PHP_EOL;
             }
 
@@ -221,8 +223,12 @@ class Pt {
     }
 
     public static function printNS() {
-        foreach (self::$modules as $m) {
-            $m->printComponents();
+        foreach (self::$modules as $name => $m) {
+            if (is_string($m)) {
+                echo "| 0.Module $name\n";
+            } else {
+                $m->printComponents();
+            }
         }
     }
 }
