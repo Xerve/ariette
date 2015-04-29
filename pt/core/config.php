@@ -1,15 +1,17 @@
 <?php
 namespace Pt;
 
-use \Exception;
-
-$config_settings = [];
-
 Pt::module('Pt')
-->component('config', function($component=null, $settings=null) use (&$config_settings) {
+->component('config', function($component=null, $settings=null) {
+    static $config_settings = [];
+
     // If not being used as middleware
     if (is_string($component) && $settings !== null) {
-        $config_settings[$component] = $settings;
+        if (!array_key_exists($component, $config_settings)) {
+            $config_settings[$component] = [];
+        }
+
+        $config_settings[$component] = array_merge($config_settings[$component], $settings);
     }
 
     // Fetching settings

@@ -1,12 +1,10 @@
 <?php
 namespace Pt;
 
-use \Exception;
-
-$rules = [];
-
 Pt::module('Pt')
-->component('redirect', function($component, $settings) use (&$rules) {
+->component('redirect', function($component, $settings) {
+    static $rules = [];
+
     // Adding rules
     if (is_string($component) && is_string($settings)) {
         $rules[$component] = $settings;

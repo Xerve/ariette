@@ -1,8 +1,6 @@
 <?php
 namespace Pt;
 
-use \Exception;
-
 class Module {
     private $name;
     private $components;
@@ -36,7 +34,7 @@ class Module {
             return $this->components['__init__'];
         }
 
-        throw new Exception("Cannot find Component $name in Module $this->name");
+        throw new PtException("Cannot find Component $name in Module $this->name");
     }
 
     public function __call($name, $arguments) {
@@ -45,7 +43,7 @@ class Module {
         } else if (array_key_exists($name, $this->components)) {
             return call_user_func_array($this->components[$name]->func, $arguments);
         } else {
-            throw new Exception("Cannot find Component $name in Module $this->name");
+            throw new PtException("Cannot find Component $name in Module $this->name");
         }
     }
 
@@ -89,7 +87,7 @@ class Module {
 
         // Trying to redefine a component
         else if (array_key_exists($name, $this->components)) {
-            throw new Exception("Cannot redefine Component $name on Module $this->name");
+            throw new PtException("Cannot redefine Component $name on Module $this->name");
         }
 
         else if (is_string($deps) && $func === null) {
@@ -100,7 +98,7 @@ class Module {
 
         // Module isn't loaded
         if ($deps === null) {
-            throw new Exception("Component $this->name::$name is not loaded!");
+            throw new PtException("Component $this->name::$name is not loaded!");
         }
 
         if ($func === null) {

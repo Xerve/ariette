@@ -4,13 +4,13 @@ require_once "vendor/autoload.php";
 
 use Pt\Pt;
 
-Pt::module("Test", [
-                    'Pt::redirect',
-                    '*Pt::redirect'], function($redirect) {
+Pt::module("Test", ['*Pt::injector', 'Pt::injector'], function($injector) {
+    $injector('wow', 0);
 })
 
-->component('me', ['*Pt::config'], function($input) {
-    $input['lol'] = $input['$config'];
+->component('me', function($input) {
+    print_r($input);
+    $input['lol'] = $input['$wow'];
     return $input;
 })
 
@@ -18,11 +18,7 @@ Pt::module("Test", [
     return $input;
 });
 
-Pt::printNS();
-
 echo Pt::run([
-    '$path' => "Test::test",
+    '$path' => "Test::me",
     "lol" => 5
-], 'NOCATCH'), PHP_EOL;
-
-Pt::printNS();
+]), PHP_EOL;
