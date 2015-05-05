@@ -6,16 +6,6 @@ class PtException extends \Exception {}
 class Pt {
     private static $modules = [];
 
-    public static function __callStatic($name, $arguments) {
-        if (is_array($arguments)) {
-            if (count($arguments === 1)) {
-                return self::getComponent($name, $arguments[0]);
-            }
-        }
-
-        throw new PtException("Improper use of static on Pt!");
-    }
-
     public static function module($name, $deps=null, $callback=null) {
         // Creating a new module
         if (!array_key_exists($name, self::$modules) && $deps !== null && !is_string($deps)) {

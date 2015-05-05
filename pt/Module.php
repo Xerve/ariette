@@ -107,9 +107,9 @@ class Module {
         }
 
         // Don't use middleware or endware for the __init__ fucntion
-        // if ($name !== '__init__') {
-        //     $deps = array_merge($this->middleware, $deps, $this->endware);
-        // }
+        if ($name !== '__init__') {
+            $deps = array_merge($this->middleware, $deps, $this->endware);
+        }
 
         $c = new Component($this->name, $name, $deps, $func);
         $this->components[$name] = $c;

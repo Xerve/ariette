@@ -5,12 +5,11 @@ require_once "vendor/autoload.php";
 use Pt\Pt;
 
 Pt::module("Test", ['*Pt::injector', 'Pt::injector'], function($injector) {
-    $injector('wow', 0);
+    $injector('wow', 'ayy lmao');
 })
 
 ->component('me', function($input) {
-    print_r($input);
-    $input['lol'] = $input['$wow'];
+    $input['wow'] = $input['$wow'];
     return $input;
 })
 

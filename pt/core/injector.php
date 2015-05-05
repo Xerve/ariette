@@ -7,17 +7,12 @@ Pt::module('Pt')
 
     // Middleware mode
     if (is_array($input)) {
-        ECHO "INJECTING...\n";
-        foreach ($inject_settings as $name => $key) {
-            ECHO "INJECTING $name => $key\n";
-            $input["$$name"] = $key;
-        }
-
-        return $input;
+        return array_merge($input, $inject_settings);
     }
 
+    // Giving new settings with $inject(key, val);
     else if (is_string($input)) {
-        $inject_settings[$input] = $inject;
+        $inject_settings["$$input"] = $inject;
     }
 
     return $inject_settings;

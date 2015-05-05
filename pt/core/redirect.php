@@ -14,7 +14,7 @@ Pt::module('Pt')
     else {
         if (array_key_exists($component['$path'], $rules)) {
             $component['$path'] = $rules[$component['$path']];
-            $c = Pt::run($component);
+            $c = json_decode(Pt::run($component), true);
             $c['$short'] = true;
 
             return $c;
