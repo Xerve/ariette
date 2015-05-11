@@ -1,7 +1,8 @@
 <?php
 
+define('PT_REQUIRE_IT', true);
+
 require_once "vendor/autoload.php";
-require __DIR__.'/it/bootstrap.php';
 
 use Pt\Pt;
 use It\It;
@@ -22,24 +23,19 @@ Pt::module("Test", ['*Pt::injector', 'Pt::injector'], function($injector) {
 ->component("test", ['*Test::lol'], function($input) {
     return $input;
 });
-//
-// echo Pt::run([
-//     '$path' => "Test::lol",
-//     "lol" => 5
-// ]), PHP_EOL;
 
 It::is(Pt::Test('test'), function() {
-    return It::should('lololol',
-        'RAWR'
-    )
+    return It::should('not be a poop', function() {
+        99;
+    })
 
-    ->itShould('rawfl',
-        'POPOP'
-    );
+    ->itShould('be a poop', function() {
+        throw new Exception("im a poop");
+    });
 });
 
 It::is(Pt::Test('lol'), function() {
-    return It::should('be cool', 9);
+    return It::should('be cool');
 });
 
 It::is(Pt::Test('me'));
