@@ -2,11 +2,11 @@
 namespace It;
 
 class TestCase {
-    private $suite;
+    private $component;
     private $callbacks = [];
 
-    public function __construct($suite, $description=null, $callback=null) {
-        $this->suite = $suite;
+    public function __construct($component, $description=null, $callback=null) {
+        $this->component = $component;
 
         if ($description !== null) {
             $this->callbacks[$description] = $callback;
@@ -20,15 +20,16 @@ class TestCase {
     }
 
     public function run() {
-        echo "$this->suite\n";
+        $failures = [];
+        echo $this->component, PHP_EOL;
         foreach ($this->callbacks as $case => $func) {
             if (is_callable($func)) {
                 try {
-                    $func();
-                    echo "    [O] It should $case\n";
+                    $func($this->component);
+                    echo "    [P] It should $case\n";
                 } catch (\Exception $e) {
-                    $res = $e->getMessage();
-                    echo "    [X] It should $case\n";
+                    $failures[$case] = $e->getMessage();
+                    echo "    [F] It should $case\n";
                 }
             } else if ($func === null) {
                 echo "    [ ] It should $case\n";
@@ -36,7 +37,9 @@ class TestCase {
                 throw new ItException("$case is not a callable case!");
             }
         }
-        echo "\n";
+        echo PHP_EOL;
+
+        return $failures;
     }
 
     public function itShould($description, $callback=null) {

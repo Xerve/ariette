@@ -3,5 +3,8 @@
     "description": "A front-end agnostic microframework for PHP",
     "autoload": {
         "files": ["pt/bootstrap.php"]
+    },
+    "scripts": {
+        "test": "php scripts/test.php"
     }
 }

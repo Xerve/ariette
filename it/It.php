@@ -5,9 +5,8 @@ class It {
     private static $testCases = [];
     private static $current = '';
 
-    public static function is($description, $test=null) {
-        $description = (string) $description;
-        self::$current = $description;
+    public static function is($component, $test=null) {
+        self::$current = $component;
 
         if ($test === null) {
             self::$testCases[] = new TestCase(self::$current);
@@ -20,9 +19,29 @@ class It {
         return new TestCase(self::$current, $description, $test);
     }
 
+    public static function expects($item, $description=null) {
+        return new Expectation($item, $description);
+    }
+
     public static function lives() {
+        $failures = [];
+        $success = true;
         foreach (self::$testCases as $case) {
-            $case();
+            $failures[] = $case();
         }
+
+        echo PHP_EOL;
+        foreach ($failures as $fail) {
+            $success = $success && ($fail === []);
+            foreach ($fail as $case => $cause) {
+                echo "FAILED $case => $cause\n";
+            }
+        }
+
+        if ($success) {
+            return 0;
+        }
+
+        return 1;
     }
 }

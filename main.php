@@ -21,7 +21,9 @@ Pt::module("Test", ['*Pt::injector', 'Pt::injector'], function($injector) {
     return $input;
 });
 
-echo Pt::run([
+Pt::run([
     '$path' => "Test::lol",
     "lol" => 5
-]), PHP_EOL;
+]);
+
+Pt::printNS();
