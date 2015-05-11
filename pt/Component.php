@@ -13,9 +13,13 @@ class Component {
     }
 
     public function __toString() {
+        return "Component $this->name";
+    }
+
+    public function printDependencies() {
         $buf = "Component $this->name [";
         foreach ($this->deps as $dep) {
-            $buf = $buf . "$dep ";
+            $buf .= "$dep ";
         }
         $buf = trim($buf, ' ') . ']';
 

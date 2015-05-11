@@ -1,8 +1,6 @@
 <?php
 namespace Pt;
 
-class PtException extends \Exception {}
-
 class Pt {
     private static $modules = [];
 
@@ -221,6 +219,12 @@ class Pt {
             }
         }
     }
-}
 
-Pt::module('Pt', __DIR__.'/core/Pt.php');
+    public static function __callStatic($name, $args) {
+        if ($args) {
+            return self::module($name)->component($args[0]);
+        } else {
+            return self::module($name);
+        }
+    }
+}

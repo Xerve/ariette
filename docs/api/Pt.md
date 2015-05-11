@@ -3,7 +3,7 @@
 The static Pt class is the main instance of the application that will keep track
 of modules you've declared and in libraries you've included.
 
-#### `Pt::module(string $name, array<string> $deps, [function $callback])`
+## `Pt::module(string $name, array<string> $deps, [function $callback])`
 
 Creates a new Module named `$name`.
 
@@ -47,7 +47,7 @@ Pt::module('Test', ['Pt::redirect*', 'Pt::something'], function($something) {
 });
 ```
 
-#### `Pt::module(string $name)`
+## `Pt::module(string $name)`
 
 If you have already created a module with the name `$name`, it will return the
 appropriate module.

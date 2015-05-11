@@ -6,6 +6,7 @@ class Module {
     private $components;
     private $middleware;
     private $endware;
+    private $lock;
 
     public $init;
 
@@ -16,14 +17,11 @@ class Module {
         $this->endware = $endware;
 
         $this->init = false;
+        $this->lock = false;
     }
 
     public function __toString() {
-        if ($this->init === false) {
-            return "0.Module $this->name";
-        } else {
-            return "Module $this->name";
-        }
+        return "Module $this->name";
     }
 
     public function __get($name) {
@@ -51,6 +49,10 @@ class Module {
         $this->init();
     }
 
+    public function lock() {
+        $this->lock = true;
+    }
+
     public function init() {
         $this->init = true;
         Pt::handle($this->component('__init__'), [], 'NOOP');
@@ -72,12 +74,15 @@ class Module {
             $c = $this->components[$name];
 
             if (is_string($c)) {
+                $lock = $this->lock;
+                $this->lock = false;
                 unset($this->components[$name]);
                 $__require = function() use ($c) {
                     require_once $c;
                 };
 
                 $__require();
+                $this->lock = $lock;
 
                 return $this->components[$name];
             } else {
@@ -90,7 +95,12 @@ class Module {
             throw new PtException("Cannot redefine Component $name on Module $this->name");
         }
 
+        // Defining laxyily loaded component
         else if (is_string($deps) && $func === null) {
+            if ($this->lock && $name !== '__init__') {
+                throw new PtException("Cannot declare Component $name on locked Module $this->name");
+            }
+
             $this->components[$name] = $deps;
 
             return $this;
@@ -111,6 +121,10 @@ class Module {
             $deps = array_merge($this->middleware, $deps, $this->endware);
         }
 
+        if ($this->lock && $name !== '__init__') {
+            throw new PtException("Cannot declare Component $name on locked Module $this->name");
+        }
+
         $c = new Component($this->name, $name, $deps, $func);
         $this->components[$name] = $c;
 
@@ -122,12 +136,18 @@ class Module {
     }
 
     public function printComponents() {
-        echo '| ', $this, PHP_EOL;
+        if ($this->init === false) {
+            $self = "0.Module $this->name";
+        } else {
+            $self = "Module $this->name";
+        }
+
+        echo '| ', $self, PHP_EOL;
         foreach ($this->components as $name => $c) {
             if (is_string($c)) {
                 echo "|---> 0.Component $this->name::$name\n";
             } else {
-                echo '|---> ', $c, PHP_EOL;
+                echo '|---> ', $c->printDependencies(), PHP_EOL;
             }
         }
     }

@@ -1,10 +1,7 @@
 {
     "name": "rrdelaney/Pt",
     "description": "A front-end agnostic microframework for PHP",
-    "require": {
-        "j4mie/idiorm": "1.5.1"
-    },
     "autoload": {
-        "psr-4": {"Pt\\": "pt/"}
+        "files": ["pt/bootstrap.php"]
     }
 }
