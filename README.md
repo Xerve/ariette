@@ -1,6 +1,8 @@
 # Pt
 
-[![Build Status](https://travis-ci.org/rrdelaney/Pt.svg?branch=master)](https://travis-ci.org/rrdelaney/Pt)[![Codacy Badge](https://www.codacy.com/project/badge/4a44b7222f244f9da5dddd6a509c996a)](https://www.codacy.com/app/rrdelaney/Pt)
+[![Build Status](https://travis-ci.org/rrdelaney/Pt.svg?branch=master)](https://travis-ci.org/rrdelaney/Pt)
+[![Codacy Badge](https://www.codacy.com/project/badge/4a44b7222f244f9da5dddd6a509c996a)](https://www.codacy.com/app/rrdelaney/Pt)
+[![Documentation Status](https://readthedocs.org/projects/pt/badge/?version=latest)](https://readthedocs.org/projects/pt/?badge=latest)
 
 Pt is a small framework designed to make you not hate your life as much because
 you're using PHP.
