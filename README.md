@@ -1,6 +1,7 @@
 # Pt
 
 [![Build Status](https://travis-ci.org/rrdelaney/Pt.svg?branch=master)](https://travis-ci.org/rrdelaney/Pt)
+
 Pt is a small framework designed to make you not hate your life as much because
 you're using PHP.
 
