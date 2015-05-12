@@ -1,5 +1,5 @@
 <?php
-namespace Pt;
+namespace Ariette;
 
 class Component {
     public $name;
@@ -28,7 +28,7 @@ class Component {
 
     public function __invoke($input, $deps=null) {
         if ($deps === null) {
-            return Pt::handle($this, $input);
+            return Ariette::handle($this, $input);
         }
 
         $deps[] = $input;

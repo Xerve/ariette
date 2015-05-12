@@ -1,7 +1,7 @@
 <?php
-namespace Pt;
+namespace Ariette;
 
-Pt::module('Pt')
+Ariette::module('Ariette')
 ->component('redirect', function($component, $settings) {
     static $rules = [];
 

@@ -1,7 +1,7 @@
 <?php
-namespace Pt;
+namespace Ariette;
 
-class Pt {
+class Ariette {
     private static $modules = [];
 
     public static function module($name, $deps=null, $callback=null) {
@@ -55,16 +55,16 @@ class Pt {
 
                 // Module is already loaded
                 if (!is_string($m)) {
-                    throw new PtException("Cannot redeclare Module $name!");
+                    throw new ArietteException("Cannot redeclare Module $name!");
                 } else {
-                    throw new PtException("Cannot declare Module $mod as file!");
+                    throw new ArietteException("Cannot declare Module $mod as file!");
                 }
             }
         }
 
         // Default
         else {
-            throw new PtException("Module $name is not loaded!");
+            throw new ArietteException("Module $name is not loaded!");
         }
     }
 
@@ -72,7 +72,7 @@ class Pt {
         if ($com === null) {
             $i = explode('::', $mod);
             if (count($i) > 2) {
-                throw new PtException("Invalid component string $mod!");
+                throw new ArietteException("Invalid component string $mod!");
             }
 
             $mod = $i[0];
@@ -83,7 +83,7 @@ class Pt {
         }
 
         if (!array_key_exists($mod, self::$modules)) {
-            throw new PtException("No module $mod has been loaded!");
+            throw new ArietteException("No module $mod has been loaded!");
         }
 
         if (!is_string(self::$modules[$mod]) && self::$modules[$mod]->init === false) {
@@ -104,18 +104,18 @@ class Pt {
         }
 
         if (!array_key_exists('$path', $input)) {
-            throw new PtException('No $path provided!');
+            throw new ArietteException('No $path provided!');
         }
 
         $i = explode('::', $input['$path']);
         if (count($i) != 2) {
-            throw new PtException("Invalid path string $path!");
+            throw new ArietteException("Invalid path string $path!");
         }
 
         if ($silent !== 'NOCATCH') {
             try {
                 $component = self::getComponent($i[0], $i[1]);
-            } catch (PtException $e) {
+            } catch (ArietteException $e) {
                 return json_encode([
                     '@status' => 404,
                     '@log' => $e->getMessage()

@@ -1,7 +1,7 @@
 <?php
-namespace Pt;
+namespace Ariette;
 
-Pt::module('Pt')
+Ariette::module('Ariette')
 ->component('config', function($component=null, $settings=null) {
     static $config_settings = [];
 

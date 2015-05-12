@@ -1,5 +1,5 @@
 <?php
-namespace Pt;
+namespace Ariette;
 
 class Module {
     private $name;
@@ -32,7 +32,7 @@ class Module {
             return $this->components['__init__'];
         }
 
-        throw new PtException("Cannot find Component $name in Module $this->name");
+        throw new ArietteException("Cannot find Component $name in Module $this->name");
     }
 
     public function __call($name, $arguments) {
@@ -41,7 +41,7 @@ class Module {
         } else if (array_key_exists($name, $this->components)) {
             return call_user_func_array($this->components[$name]->func, $arguments);
         } else {
-            throw new PtException("Cannot find Component $name in Module $this->name");
+            throw new ArietteException("Cannot find Component $name in Module $this->name");
         }
     }
 
@@ -55,7 +55,7 @@ class Module {
 
     public function init() {
         $this->init = true;
-        Pt::handle($this->component('__init__'), [], 'NOOP');
+        Ariette::handle($this->component('__init__'), [], 'NOOP');
     }
 
     public function component($name, $deps=null, $func=null) {
@@ -92,13 +92,13 @@ class Module {
 
         // Trying to redefine a component
         else if (array_key_exists($name, $this->components)) {
-            throw new PtException("Cannot redefine Component $name on Module $this->name");
+            throw new ArietteException("Cannot redefine Component $name on Module $this->name");
         }
 
         // Defining laxyily loaded component
         else if (is_string($deps) && $func === null) {
             if ($this->lock && $name !== '__init__') {
-                throw new PtException("Cannot declare Component $name on locked Module $this->name");
+                throw new ArietteException("Cannot declare Component $name on locked Module $this->name");
             }
 
             $this->components[$name] = $deps;
@@ -108,7 +108,7 @@ class Module {
 
         // Module isn't loaded
         if ($deps === null) {
-            throw new PtException("Component $this->name::$name is not loaded!");
+            throw new ArietteException("Component $this->name::$name is not loaded!");
         }
 
         if ($func === null) {
@@ -122,7 +122,7 @@ class Module {
         }
 
         if ($this->lock && $name !== '__init__') {
-            throw new PtException("Cannot declare Component $name on locked Module $this->name");
+            throw new ArietteException("Cannot declare Component $name on locked Module $this->name");
         }
 
         $c = new Component($this->name, $name, $deps, $func);

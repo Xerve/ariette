@@ -1,9 +1,9 @@
 <?php
 
-use Pt\Pt;
+use Ariette\Ariette;
 use It\It;
 
-It::is(Pt::Pt('config'), function() {
+It::is(Ariette::Ariette('config'), function() {
     return It::should('accept configurations', function($config) {
         $config = $config->func;
         $config('MyModule::test', [

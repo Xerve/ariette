@@ -1,7 +1,7 @@
 <?php
-namespace Pt;
+namespace Ariette;
 
-Pt::module('Pt')
+Ariette::module('Ariette')
 ->component('injector', function($input, $inject=null) {
     static $inject_settings = [];
 

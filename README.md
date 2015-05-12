@@ -1,10 +1,9 @@
-# Pt
+# Ariette
+[![Build Status](https://travis-ci.org/rrdelaney/Ariette.svg?branch=master)](https://travis-ci.org/rrdelaney/Ariette)
+[![Codacy Badge](https://www.codacy.com/project/badge/1d9c24c757eb4e478f1e6aa96e914971)](https://www.codacy.com/app/rrdelaney/Ariette)
+[![Documentation Status](https://readthedocs.org/projects/ariette/badge/?version=latest)](https://readthedocs.org/projects/ariette/?badge=latest)
 
-[![Build Status](https://travis-ci.org/rrdelaney/Pt.svg?branch=master)](https://travis-ci.org/rrdelaney/Pt)
-[![Codacy Badge](https://www.codacy.com/project/badge/4a44b7222f244f9da5dddd6a509c996a)](https://www.codacy.com/app/rrdelaney/Pt)
-[![Documentation Status](https://readthedocs.org/projects/pt/badge/?version=latest)](https://readthedocs.org/projects/pt/?badge=latest)
-
-Pt is a small framework designed to make you not hate your life as much because
+Ariette is a small framework designed to make you not hate your life as much because
 you're using PHP.
 
 ## Set up environment
@@ -14,22 +13,22 @@ Run
 ```
 composer install
 composer dump-autoload
-composer test
+php scriAritettes/test.php
 ```
 
 ## Project Layout
 
 ### `/core`
-The standard library for Pt lives here.
+The standard library for Aritette lives here.
 
 ### `/docs`
 Documentation to be built with mkdocs is here.
 
 ### `/it`
-It is the testing framework that comes bundled with Pt
+It is the testing framework that comes bundled with Aritette
 
-### `/pt`
-The source code for the Pt framework
+### `/aritette`
+The source code for the Aritette framework
 
 ### `/scripts`
 Build scripts and other fun stuff.
