@@ -1,6 +1,6 @@
 # Ariette
-[![Build Status](https://travis-ci.org/rrdelaney/Ariette.svg?branch=master)](https://travis-ci.org/rrdelaney/Ariette)
-[![Codacy Badge](https://www.codacy.com/project/badge/1d9c24c757eb4e478f1e6aa96e914971)](https://www.codacy.com/app/rrdelaney/Ariette)
+[![Build Status](https://travis-ci.org/rrdelaney/ariette.svg?branch=master)](https://travis-ci.org/rrdelaney/ariette)
+[![Codacy Badge](https://www.codacy.com/project/badge/4030bdab7e4941c09969d4284e8a761a)](https://www.codacy.com/app/rrdelaney/ariette)
 [![Documentation Status](https://readthedocs.org/projects/ariette/badge/?version=latest)](https://readthedocs.org/projects/ariette/?badge=latest)
 
 Ariette is a small framework designed to make you not hate your life as much because
