@@ -13,7 +13,7 @@ Run
 ```
 composer install
 composer dump-autoload
-php scriAritettes/test.php
+php scipts/test.php
 ```
 
 ## Project Layout

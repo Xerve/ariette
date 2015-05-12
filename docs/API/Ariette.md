@@ -43,7 +43,7 @@ Ariette::module('Test', ['*Ariette::redirect'], function() {
 ```php
 Ariette::module('Test', ['Ariette::redirect*', 'Ariette::something'], function($something) {
     // Ariette::redirect is endware for all Components in the Test Module
-    // $something is the Pt::something Component
+    // $something is the Ariette::something Component
 });
 ```
 

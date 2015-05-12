@@ -1,10 +1,22 @@
 {
     "name": "rrdelaney/Ariette",
     "description": "A front-end agnostic microframework for PHP",
+    "version": "0.0.1",
+    "keywords": ["framework", "microframework"],
+    "homepage": "https://github.com/rrdelaney/Ariette",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Delaney",
+            "email": "rrdelaney@outlook.com",
+            "homepage": "ryandel.com",
+            "role": "Lead Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
     "autoload": {
         "files": ["Ariette/bootstrap.php"]
-    },
-    "scripts": {
-        "test": "php scripts/test.php"
     }
 }
