@@ -1,6 +1,6 @@
 # Pt
 
-[![Build Status](https://travis-ci.org/rrdelaney/Pt.svg?branch=master)](https://travis-ci.org/rrdelaney/Pt)
+[![Build Status](https://travis-ci.org/rrdelaney/Pt.svg?branch=master)](https://travis-ci.org/rrdelaney/Pt)[![Codacy Badge](https://www.codacy.com/project/badge/4a44b7222f244f9da5dddd6a509c996a)](https://www.codacy.com/app/rrdelaney/Pt)
 
 Pt is a small framework designed to make you not hate your life as much because
 you're using PHP.
@@ -10,9 +10,9 @@ you're using PHP.
 Run
 
 ```
-    composer install
-    composer dump-autoload
-    composer test
+composer install
+composer dump-autoload
+composer test
 ```
 
 ## Project Layout
