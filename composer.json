@@ -1,9 +1,9 @@
 {
-    "name": "rrdelaney/Ariette",
+    "name": "rrdelaney/ariette",
     "description": "A front-end agnostic microframework for PHP",
     "version": "0.0.1",
     "keywords": ["framework", "microframework"],
-    "homepage": "https://github.com/rrdelaney/Ariette",
+    "homepage": "https://github.com/rrdelaney/ariette",
     "license": "MIT",
     "authors": [
         {
