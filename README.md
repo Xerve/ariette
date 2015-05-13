@@ -6,6 +6,11 @@
 Ariette is a small framework designed to make you not hate your life as much because
 you're using PHP.
 
+## Installing
+```
+composer require rrdelaney/ariette
+```
+
 ## Set up environment
 
 Run
@@ -19,16 +24,16 @@ php scipts/test.php
 ## Project Layout
 
 ### `/core`
-The standard library for Aritette lives here.
+The standard library for Ariette lives here.
 
 ### `/docs`
 Documentation to be built with mkdocs is here.
 
 ### `/it`
-It is the testing framework that comes bundled with Aritette
+It is the testing framework that comes bundled with Ariette
 
 ### `/aritette`
-The source code for the Aritette framework
+The source code for the Arifette framework
 
 ### `/scripts`
 Build scripts and other fun stuff.
