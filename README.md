@@ -33,7 +33,7 @@ Documentation to be built with mkdocs is here.
 It is the testing framework that comes bundled with Ariette
 
 ### `/aritette`
-The source code for the Arifette framework
+The source code for the Ariette framework
 
 ### `/scripts`
 Build scripts and other fun stuff.
