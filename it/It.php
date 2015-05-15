@@ -38,10 +38,6 @@ class It {
             }
         }
 
-        if ($success) {
-            exit(0);
-        }
-
-        exit(1);
+        return $success;
     }
 }
