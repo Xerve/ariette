@@ -2,15 +2,35 @@
 namespace Ariette;
 
 if (!defined('ARIETTE_REQUIRE_CORE')) {
-    define('ARIETTE_REQUIRE_CORE', true);
+    switch (ini_get('ARIETTE_REQUIRE_CORE')) {
+        case false:
+        case 'require':
+            define('ARIETTE_REQUIRE_CORE', true);
+            break;
+        default:
+            define('ARIETTE_REQUIRE_CORE', false);
+    }
 }
 
 if (!defined('ARIETTE_REQUIRE_IT')) {
-    define('ARIETTE_REQUIRE_IT', false);
+    switch (ini_get('ARIETTE_REQUIRE_IT')) {
+        case false:
+        case 'require':
+            define('ARIETTE_REQUIRE_IT', true);
+            break;
+        default:
+            define('ARIETTE_REQUIRE_IT', false);
+    }
 }
 
 if (!defined('ARIETTE_REQUIRE_NONE')) {
-    define('ARIETTE_REQUIRE_NONE', false);
+    switch (ini_get('ARIETTE_REQUIRE_NONE')) {
+        case false:
+            define('ARIETTE_REQUIRE_NONE', false);
+            break;
+        default:
+            define('ARIETTE_REQUIRE_NONE', true);
+    }
 }
 
 if (!constant('ARIETTE_REQUIRE_NONE')) {

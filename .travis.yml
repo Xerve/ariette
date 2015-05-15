@@ -6,6 +6,6 @@ php:
 install: composer install
 before_script: composer dump-autoload
 script:
-    - php scripts/testAriette.php
-    - php scripts/testIt.php
-    - php scripts/testCore.php
+    - php scripts/test.php --ariette
+    - php scripts/test.php --it
+    - php scripts/test.php --core
