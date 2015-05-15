@@ -1,7 +1,7 @@
 <?php
 
-const PHPCS = __DIR__.'/../vendor/bin/phpcs';
-const PHPUNIT = __DIR__.'/../vendor/bin/phpunit';
+define('PHPCS', __DIR__.'/../vendor/bin/phpcs');
+define('PHPUNIT', __DIR__.'/../vendor/bin/phpunit');
 
 function CLI($command) {
     $success = null;
