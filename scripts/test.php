@@ -14,8 +14,8 @@ function CLI($command) {
 }
 
 function testAriette() {
-    CLI(PHPCS.
-        ' ariette');
+    // CLI(PHPCS.
+    //     ' ariette');
 
     CLI(PHPUNIT.
         ' --bootstrap ariette/bootstrap.php '.

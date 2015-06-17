@@ -1,6 +1,10 @@
 <?php
 namespace Ariette;
 
-class ArietteException extends \Exception {}
+class ArietteException extends \Exception {
 
-class ModuleNotFoundException extends ArietteException {}
+}
+
+class ModuleNotFoundException extends ArietteException {
+    
+}
