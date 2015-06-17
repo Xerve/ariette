@@ -51,5 +51,5 @@ if (array_key_exists('ariette', $options)) {
     echo "Usage: \n".
          "  --ariette: Test ariette's internals\n".
          "  --it: Test ariette's testing framework's internals\n".
-         "  --core: Test ariette's core module with It\n"
+         "  --core: Test ariette's core module with It\n";
 }
