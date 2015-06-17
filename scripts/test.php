@@ -24,8 +24,8 @@ function testAriette() {
 }
 
 function testIt() {
-    CLI(PHPCS.
-        ' it', $success);
+    // CLI(PHPCS.
+    //     ' it', $success);
 }
 
 function testCore() {
@@ -51,6 +51,5 @@ if (array_key_exists('ariette', $options)) {
     echo "Usage: \n".
          "  --ariette: Test ariette's internals\n".
          "  --it: Test ariette's testing framework's internals\n".
-         "  --core: Test ariette's core module with It\n".
-         "  --all: Run all of the above tests\n";
+         "  --core: Test ariette's core module with It\n"
 }
