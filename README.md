@@ -4,7 +4,8 @@
 [![Documentation Status](https://readthedocs.org/projects/ariette/badge/?version=latest)](https://readthedocs.org/projects/ariette/?badge=latest)
 
 Ariette is a small framework designed to make you not hate your life as much because
-you're using PHP.
+you're using PHP. It is designed around making API's and focuses on your backend logic, 
+but doesn't make any desicions for you, making it easy to integrate into new projects.
 
 ## Installing
 ```
